@@ -1,0 +1,18 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #111;
+}
+body {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+#mapCanvas {
+  width: 90vmin;
+  height: 90vmin;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  background: #0b2d4a;
+}
