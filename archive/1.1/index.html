@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCity - City Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .map-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .map-btn {
+            padding: 12px 24px;
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .map-btn:hover {
+            background: #e94560;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        .seed-section {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .seed-input {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            width: 200px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .seed-input::placeholder {
+            color: #666;
+        }
+
+        .seed-input:focus {
+            border-color: #e94560;
+        }
+
+        .custom-btn {
+            padding: 12px 24px;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            border: none;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .custom-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.6);
+        }
+
+        .play-btn {
+            padding: 16px 48px;
+            background: linear-gradient(90deg, #00bf63, #00d48f);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 191, 99, 0.5);
+        }
+
+        .editor-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .editor-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .or-text {
+            color: #666;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WebCity</h1>
+        <p class="subtitle">Build Your Dream City</p>
+
+        <div class="section">
+            <p class="section-title">Select a Map</p>
+            <div class="map-buttons">
+                <button class="map-btn" onclick="selectPreset('grassland')">Grassland</button>
+                <button class="map-btn" onclick="selectPreset('desert')">Desert</button>
+                <button class="map-btn" onclick="selectPreset('mountain')">Mountain</button>
+                <button class="map-btn" onclick="selectPreset('island')">Island</button>
+                <button class="map-btn" onclick="selectPreset('arctic')">Arctic</button>
+            </div>
+        </div>
+
+        <p class="or-text">- or enter a custom seed -</p>
+
+        <div class="section">
+            <div class="seed-section">
+                <input type="text" id="seedInput" class="seed-input" placeholder="Enter seed...">
+                <button class="custom-btn" onclick="startWithSeed()">Use Seed</button>
+            </div>
+        </div>
+
+        <button class="play-btn" onclick="startGame()">Play</button>
+
+        <p class="or-text">- or create your own -</p>
+
+        <button class="editor-btn" onclick="openEditor()">Custom Map Editor</button>
+    </div>
+
+    <script>
+        const presetSeeds = {
+            grassland: '63ykben9',
+            desert: '2002',
+            mountain: '3003',
+            island: '4004',
+            arctic: '5005'
+        };
+
+        let selectedMap = null;
+
+        function selectPreset(mapType) {
+            selectedMap = mapType;
+            document.getElementById('seedInput').value = '';
+            document.querySelectorAll('.map-btn').forEach(btn => {
+                btn.style.background = 'rgba(233, 69, 96, 0.2)';
+                btn.style.boxShadow = 'none';
+            });
+            event.target.style.background = '#e94560';
+            event.target.style.boxShadow = '0 4px 15px rgba(233, 69, 96, 0.4)';
+        }
+
+        function startWithSeed() {
+            const seed = document.getElementById('seedInput').value.trim();
+            if (seed) {
+                selectedMap = 'seed:' + seed;
+                document.querySelectorAll('.map-btn').forEach(btn => {
+                    btn.style.background = 'rgba(233, 69, 96, 0.2)';
+                    btn.style.boxShadow = 'none';
+                });
+            }
+        }
+
+        function startGame() {
+            let url = 'game/index.html?';
+            
+            if (selectedMap) {
+                if (selectedMap.startsWith('seed:')) {
+                    url += 'seed=' + encodeURIComponent(selectedMap.replace('seed:', '')) + '&type=custom';
+                } else {
+                    const seed = presetSeeds[selectedMap];
+                    url += 'seed=' + seed + '&type=preset';
+                }
+            } else {
+                const randomSeed = Math.random().toString(36).substring(2, 10);
+                url += 'seed=' + randomSeed + '&type=random';
+            }
+            
+            window.location.href = url;
+        }
+
+        function openEditor() {
+            window.location.href = 'editor/editor.html';
+        }
+
+        document.getElementById('seedInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startWithSeed();
+            }
+        });
+    </script>
+</body>
+</html>
