@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 80px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .menu-btn {
+            padding: 20px 32px;
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeSlideIn 0.35s ease forwards;
+        }
+
+        .menu-btn:nth-child(1) { animation-delay: 0.1s; }
+        .menu-btn:nth-child(2) { animation-delay: 0.2s; }
+
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-btn:hover {
+            background: #333;
+            border-color: #555;
+            transform: scale(1.02);
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
+
+        .back-btn {
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: #888;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeSlideIn 0.3s ease 0.1s forwards;
+        }
+
+        .back-btn:hover {
+            border-color: #555;
+            color: #e0e0e0;
+            transform: scale(1.02);
+        }
+
+        .back-btn:active {
+            transform: scale(0.98);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #888;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeSlideIn 0.35s ease 0.15s forwards;
+        }
+
+        .option-tabs {
+            --indicator-left: 0px;
+            --indicator-width: 138px;
+            position: relative;
+            display: flex;
+            gap: 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #2a2a2a;
+            opacity: 0;
+            animation: fadeIn 0.3s ease 0.25s forwards;
+        }
+
+        .option-tabs.has-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: var(--indicator-left);
+            width: var(--indicator-width);
+            height: 2px;
+            background: #e0e0e0;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .option-tab {
+            padding: 16px 24px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-tab:hover {
+            color: #aaa;
+        }
+
+        .option-tab.active {
+            color: #e0e0e0;
+        }
+
+        .content-panel {
+            display: none;
+            padding: 20px 0;
+            opacity: 0;
+            animation: fadeIn 0.25s ease forwards;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .preset-btn {
+            padding: 16px 20px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            background: #252525;
+            border: 1px solid #333;
+            color: #ccc;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeSlideIn 0.3s ease forwards;
+        }
+
+        .preset-btn:nth-child(1) { animation-delay: 0.05s; }
+        .preset-btn:nth-child(2) { animation-delay: 0.1s; }
+        .preset-btn:nth-child(3) { animation-delay: 0.15s; }
+        .preset-btn:nth-child(4) { animation-delay: 0.2s; }
+        .preset-btn:nth-child(5) { animation-delay: 0.25s; }
+
+        .preset-btn:hover {
+            background: #2d2d2d;
+            border-color: #444;
+            transform: scale(1.03);
+        }
+
+        .preset-btn:active {
+            transform: scale(0.97);
+        }
+
+        .seed-input-group {
+            display: flex;
+            gap: 12px;
+            max-width: 400px;
+            opacity: 0;
+            animation: fadeSlideIn 0.3s ease 0.1s forwards;
+        }
+
+        .seed-input {
+            flex: 1;
+            padding: 16px 20px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: #252525;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            outline: none;
+            transition: border-color 0.2s ease, transform 0.15s ease;
+        }
+
+        .seed-input:focus {
+            border-color: #555;
+            transform: scale(1.01);
+        }
+
+        .seed-input::placeholder {
+            color: #555;
+        }
+
+        .play-btn {
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            background: #2d5a2d;
+            border: 1px solid #3a7a3a;
+            color: #8f8;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+            opacity: 0;
+            animation: fadeSlideIn 0.3s ease 0.15s forwards;
+        }
+
+        .play-btn:hover {
+            background: #367036;
+            border-color: #4a9a4a;
+            transform: scale(1.03);
+        }
+
+        .play-btn:active {
+            transform: scale(0.97);
+        }
+
+        .play-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="screen-main" class="screen active">
+        <h1 class="main-title">WEBCITY</h1>
+        <p class="subtitle">A CITY BUILDING SIMULATOR</p>
+        <div class="menu-buttons">
+            <button class="menu-btn" onclick="showScreen('screen-new-world')">Make New World</button>
+            <button class="menu-btn" onclick="alert('This feature is not implemented yet')">Continue</button>
+        </div>
+    </div>
+
+    <div id="screen-new-world" class="screen">
+        <button class="back-btn" onclick="showScreen('screen-main')">← Back</button>
+        <h2 class="section-title">WEBCITY — NEW WORLD</h2>
+        
+        <div class="option-tabs">
+            <button class="option-tab active" data-tab="presets" onclick="selectTab('presets')">Choose from presets</button>
+            <button class="option-tab" data-tab="seed" onclick="selectTab('seed')">Enter seed</button>
+            <button class="option-tab" data-tab="random" onclick="selectTab('random')">Random</button>
+            <button class="option-tab" data-tab="custom" onclick="selectTab('custom')">Make custom world</button>
+        </div>
+
+        <div id="panel-presets" class="content-panel active">
+            <div class="preset-grid">
+                <button class="preset-btn" onclick="startGame('preset', 'grassland', '63ykben9')">Grassland</button>
+                <button class="preset-btn" onclick="startGame('preset', 'desert', '2002')">Desert</button>
+                <button class="preset-btn" onclick="startGame('preset', 'mountain', '3003')">Mountain</button>
+                <button class="preset-btn" onclick="startGame('preset', 'island', '4004')">Island</button>
+                <button class="preset-btn" onclick="startGame('preset', 'arctic', '5005')">Arctic</button>
+            </div>
+        </div>
+
+        <div id="panel-seed" class="content-panel">
+            <div class="seed-input-group">
+                <input type="text" id="seedInput" class="seed-input" placeholder="Enter seed..." maxlength="20">
+                <button class="play-btn" onclick="startGameWithSeed()">Go</button>
+            </div>
+        </div>
+
+        <div id="panel-random" class="content-panel">
+            <button class="play-btn" onclick="startGame('random', '', '')">Generate Random World</button>
+        </div>
+
+        <div id="panel-custom" class="content-panel">
+            <button class="menu-btn" onclick="alert('Custom map editor not implemented yet')">Open Map Editor</button>
+        </div>
+    </div>
+
+    <script>
+        const presetSeeds = {
+            grassland: '63ykben9',
+            desert: '2002',
+            mountain: '3003',
+            island: '4004',
+            arctic: '5005'
+        };
+
+        let currentSeed = '';
+        let currentType = '';
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            setTimeout(() => {
+                document.getElementById(screenId).classList.add('active');
+            }, 50);
+        }
+
+        function selectTab(tabName, initial = false) {
+            const activeTab = document.querySelector(`.option-tab[data-tab="${tabName}"]`);
+            const tabsContainer = document.querySelector('.option-tabs');
+            
+            document.querySelectorAll('.option-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tabName);
+            });
+            
+            if (activeTab && tabsContainer) {
+                const tabLeft = activeTab.offsetLeft;
+                const tabWidth = activeTab.offsetWidth;
+                tabsContainer.style.setProperty('--indicator-left', tabLeft + 'px');
+                tabsContainer.style.setProperty('--indicator-width', tabWidth + 'px');
+                if (!tabsContainer.classList.contains('has-indicator')) {
+                    tabsContainer.classList.add('has-indicator');
+                }
+            }
+            
+            document.querySelectorAll('.content-panel').forEach(p => {
+                p.classList.remove('active');
+                void p.offsetWidth;
+                p.classList.toggle('active', p.id === 'panel-' + tabName);
+            });
+        }
+
+        function initTabs() {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const tabsContainer = document.querySelector('.option-tabs');
+                    if (tabsContainer && !tabsContainer.classList.contains('has-indicator')) {
+                        const activeTab = document.querySelector('.option-tab[data-tab="presets"]');
+                        if (activeTab) {
+                            const tabLeft = activeTab.offsetLeft;
+                            const tabWidth = activeTab.offsetWidth;
+                            tabsContainer.style.setProperty('--indicator-left', tabLeft + 'px');
+                            tabsContainer.style.setProperty('--indicator-width', tabWidth + 'px');
+                            tabsContainer.classList.add('has-indicator');
+                        }
+                    }
+                });
+            });
+        }
+
+        function generateRandomSeed() {
+            return Math.random().toString(36).substring(2, 10);
+        }
+
+        function startGame(type, mapName, seed) {
+            let url = 'game/index.html?';
+            
+            if (type === 'preset') {
+                url += 'seed=' + seed + '&type=preset';
+            } else if (type === 'random') {
+                url += 'seed=' + generateRandomSeed() + '&type=random';
+            } else if (type === 'custom-seed') {
+                url += 'seed=' + encodeURIComponent(seed) + '&type=custom';
+            }
+            
+            window.location.href = url;
+        }
+
+        function startGameWithSeed() {
+            const seed = document.getElementById('seedInput').value.trim();
+            if (seed) {
+                startGame('custom-seed', '', seed);
+            }
+        }
+
+        document.getElementById('seedInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startGameWithSeed();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', initTabs);
+    </script>
+</body>
+</html>
